@@ -4,9 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
+using UnityEngine.InputSystem;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
-public class PlayerController : MonoBehaviour
+public class PlayerInputController : MonoBehaviour
 {
     // Normal variables
     private float moveSpeed = 10;
@@ -17,46 +18,39 @@ public class PlayerController : MonoBehaviour
     private static int jumpCount = 0;
     private static bool isDashing = false;
     private static bool canDash = true;
+    private Vector3 moveDirection;
+    private Vector2 moveDir2;
+
+    public Camera camera;
+
+
 
     // Special variables; CharacterController is a class that allows for movement of an object that needs to be constrained by collisions
     private CharacterController controller;
+    private PlayerControls playerControls;
 
     // Vector 3 is a struct that is a representation of vectors / points - used for manipulation of positions and moving directions
-    private Vector3 moveDirection;
+    
 
     // Start function; called only once in the life cycle of a funcion; second funcion called - only after awake (if applicable)
     // Start acts as an object initializer in Unity
     void Start()
     {
-        // GetComponent: gets a reference to a component of a given type T (CharacterController in this case) from the same GameObject
-        // that the script is attached to (the "Player" Object in this case)
         controller = GetComponent<CharacterController>();
+        playerControls = new PlayerControls();
+        playerControls.Enable();
     }
 
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
-        // Temp var to store the current moveDirection's Y component (only the Y value of the Vector3)
         float yStore = moveDirection.y;
 
-        /* 
-         * Calculates the vertical and horizontal components of the movement direction; because moveDirection is a Vector-type variable,
-         * it's values inherently store the direction in pos vs neg signs, the values actually indicate the speed the character is moving
-         * in a given direction.
-         * NOTE: vertical and horizontal are the X and Z components of the vector, meaning they do not control the up and down components
-         */
-        moveDirection = (transform.forward * Input.GetAxis("Vertical") * moveSpeed) + (transform.right * Input.GetAxis("Horizontal") * moveSpeed);
-
-        /*
-         * normalized is a property of a Vector3 that recalculates the given vector to have a magnitude of 1
-         * (magnitude is a fancy vector way of saying that it is the sum of the vetors)
-         * normalization means that if a character moves in a non-cardinal direction, they will not move faster than they should
-         */
+        moveDirection *= moveSpeed;
         moveDirection = moveDirection.normalized * moveSpeed;
 
-        // Y value is retored from temp variable; necessary because otherwise Y would contribute to vector normalization; meaning
-        // that moving in a direciton and jumping would be slower than moving in a direction normally - not what we want
         moveDirection.y = yStore;
+
 
         if (controller.isGrounded)
         {
@@ -68,24 +62,12 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
 
-        if (Input.GetButtonDown("Jump") && jumpCount < 2 && !isDashing)
-        {
-            moveDirection.y = jump;
-            jumpCount += 1;
-        }
-
-        if (Input.GetButtonDown("Fire3") && !isDashing && canDash)
-        {
-            canDash = false;
-            StartCoroutine(Dash());
-            isDashing = true;
-        }
-
         if (isDashing)
         {
             moveDirection.x *= dashSpeed;
             moveDirection.z *= dashSpeed;
             // deltaTime allows for the fps of the host to not impact the move speed of the character
+            moveDirection.x *= camera.transform.forward.x;
             controller.Move(moveDirection * Time.deltaTime);
         }
         else
@@ -95,9 +77,38 @@ public class PlayerController : MonoBehaviour
             moveDirection.y += (Physics.gravity.y * gravity * Time.deltaTime);
 
             // deltaTime allows for the fps of the host to not impact the move speed of the character
+            moveDirection.x *= camera.transform.right.x;
+            moveDirection.z *= camera.transform.forward.z;
+            moveDirection = moveDirection.normalized * moveSpeed;
             controller.Move(moveDirection * Time.deltaTime);
         }
 
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        moveDir2 = context.ReadValue<Vector2>();
+        moveDirection.x = moveDir2.x;
+        moveDirection.z = moveDir2.y;
+    }
+
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (jumpCount < 2 && !isDashing)
+        {
+            moveDirection.y = jump;
+            jumpCount += 1;
+        }
+    }
+
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        if (!isDashing && canDash)
+        {
+            canDash = false;
+            StartCoroutine(Dash());
+            isDashing = true;
+        }
     }
 
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a timer running
