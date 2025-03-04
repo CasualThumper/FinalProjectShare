@@ -1,14 +1,17 @@
 // Imports
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
-using UnityEngine.TextCore.Text;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
 {
     public PauseMenuScript pms;
+
+    public ElementMenuScript ems;
+
+    private int Element = 0;
+
+    private bool inMenu = false;
 
     // Normal variables
     private float moveSpeed = 10;
@@ -31,6 +34,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         pms.ResumeGame();
+        ems.Hide(0);
         controller = GetComponent<CharacterController>();
         // GetComponent: gets a reference to a component of a given type T (CharacterController in this case) from the same GameObject
         // that the script is attached to (the "Player" Object in this case
@@ -39,10 +43,18 @@ public class PlayerController : MonoBehaviour
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Fire1") && !inMenu)
         {
+            inMenu = true;
+            ems.Show();
+        }
+
+        if (Input.GetButtonDown("Cancel") && !inMenu)
+        {
+            inMenu = true;
             pms.Pause();
         }
+
         // Temp var to store the current moveDirection's Y component (only the Y value of the Vector3)
         float yStore = moveDirection.y;
 
@@ -75,17 +87,37 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
 
-        if (Input.GetButtonDown("Jump") && jumpCount < 2 && !isDashing)
+        if (Input.GetButtonDown("Fire2") && Element == 2 && !inMenu)
         {
-            moveDirection.y = jump;
-            jumpCount += 1;
+            // Earth here
+        }
+        else if (Input.GetButtonDown("Fire2") && Element == 3 && !inMenu)
+        {
+            // Fire here
         }
 
-        if (Input.GetButtonDown("Fire3") && !isDashing && canDash)
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (Element == 4 && jumpCount < 2 && !isDashing)
+            {
+                moveDirection.y = jump;
+                jumpCount += 1;
+            }
+            else if (jumpCount < 1)
+            {
+                moveDirection.y = jump;
+                jumpCount += 1;
+            }
+        }
+
+        if (Input.GetButtonDown("Fire3") && !isDashing && canDash && Element == 4 && !inMenu)
         {
             canDash = false;
             StartCoroutine(Dash());
             isDashing = true;
+        } else if (Input.GetButtonDown("Fire3") && Element == 1 && !inMenu)
+        {
+            // Water here
         }
 
         if (isDashing)
@@ -105,6 +137,16 @@ public class PlayerController : MonoBehaviour
             controller.Move(moveDirection * Time.deltaTime);
         }
 
+    }
+
+    public void setInMenu(bool inMenu)
+    {
+        this.inMenu = inMenu;
+    }
+
+    public void setElement(int Element)
+    {
+        this.Element = Element;
     }
 
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a timer running

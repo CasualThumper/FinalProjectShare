@@ -11,6 +11,7 @@ public class PauseMenuScript : MonoBehaviour
     public Camera camera;
     public CameraController cc;
     public GameObject settingsCanvas;
+    public PlayerController pc;
     public void Pause()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.None;
@@ -30,6 +31,7 @@ public class PauseMenuScript : MonoBehaviour
         pauseCanvas.SetActive(true);
         cc.setIsPaused(false);
         pauseCanvas.SetActive(false);
+        pc.setInMenu(false);
     }
 
     public void OpenSettings()
