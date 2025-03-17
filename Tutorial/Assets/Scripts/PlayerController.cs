@@ -8,6 +8,8 @@ using UnityEngine.TextCore.Text;
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
 {
+    public PauseMenuScript pms;
+
     // Normal variables
     private float moveSpeed = 10;
     private float jump = 15;
@@ -28,14 +30,19 @@ public class PlayerController : MonoBehaviour
     // Start acts as an object initializer in Unity
     void Start()
     {
-        // GetComponent: gets a reference to a component of a given type T (CharacterController in this case) from the same GameObject
-        // that the script is attached to (the "Player" Object in this case)
+        pms.ResumeGame();
         controller = GetComponent<CharacterController>();
+        // GetComponent: gets a reference to a component of a given type T (CharacterController in this case) from the same GameObject
+        // that the script is attached to (the "Player" Object in this case
     }
 
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
+        if (Input.GetButtonDown("Cancel"))
+        {
+            pms.Pause();
+        }
         // Temp var to store the current moveDirection's Y component (only the Y value of the Vector3)
         float yStore = moveDirection.y;
 

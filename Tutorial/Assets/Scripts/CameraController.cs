@@ -5,6 +5,8 @@ using UnityEngine.LowLevelPhysics;
 
 public class CameraController : MonoBehaviour
 {
+    private bool isPaused = false;
+
     // Normal variables
     private Vector3 offset = new Vector3(0, 0, 0);
     public float rotateSpeed;
@@ -36,6 +38,9 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
+
+        if (isPaused) return;
+
         // Gets the X and Y-axis values from the mouse and rotates the transformations accordingly
         // NOTE: the target is referenced here because we want the character to move in accordance with the mouse left / right; camera auto-adjusts
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
@@ -51,7 +56,7 @@ public class CameraController : MonoBehaviour
          * however, it is also prone to an issue known as Gimbal Lock which is very, very, difficult to explain in text or verbally; however, for the simplistic testing and modification that we
          * do here, it is relatively harmless; what this actually does is tests for out-of-bounds rotations and restricts them accordingly
          */
-        if(pivot.rotation.eulerAngles.x > maxViewAngle && pivot.rotation.eulerAngles.x < 180f)
+        if (pivot.rotation.eulerAngles.x > maxViewAngle && pivot.rotation.eulerAngles.x < 180f)
         {
             pivot.rotation = Quaternion.Euler(maxViewAngle, 0, 0);
         }
@@ -70,12 +75,17 @@ public class CameraController : MonoBehaviour
         transform.position = target.position - (rotation * offset);
 
         // Makes sure the camera cannot go below the player, IE camera cannot go through the ground or get super close to player
-        if(transform.position.y < target.position.y)
+        if (transform.position.y < target.position.y)
         {
-            transform.position = new Vector3(transform.position.x, target.position.y -.5f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, target.position.y - .5f, transform.position.z);
         }
 
         // Centers the camera's focus on the player
         transform.LookAt(target);
+    }
+
+    public void setIsPaused(bool val)
+    {
+        isPaused = val;
     }
 }
