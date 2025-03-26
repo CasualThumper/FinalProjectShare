@@ -24,7 +24,7 @@ public class FireballScript : MonoBehaviour
         temp.transform.SetParent(character.transform);
 
         Vector3 offset = cam.transform.localPosition;
-        float x = -offset.x;
+        float x = offset.x;
         float y = character.transform.position.y + 1f;
         float z = 2f;
         Vector3 final = new Vector3(x, y, z);
@@ -36,10 +36,10 @@ public class FireballScript : MonoBehaviour
         final += offset2;
         temp.transform.localPosition = final;
         world = temp.transform.TransformPoint(final);
-        StartCoroutine(moveFireball(newFireball, newFireball.transform.position, world));
+        StartCoroutine(MoveFireball(newFireball, newFireball.transform.position, world));
     }
 
-    IEnumerator moveFireball(GameObject newFireball, Vector3 start, Vector3 end)
+    IEnumerator MoveFireball(GameObject newFireball, Vector3 start, Vector3 end)
     {
         while (elapsedTime < duration && !earlyDetonate)
         {
@@ -50,15 +50,11 @@ public class FireballScript : MonoBehaviour
         earlyDetonate = false;
         newFireball.transform.position = end;
         elapsedTime = 0f;
-        despawnFireball(newFireball);
+        Destroy(newFireball);
+        yield break;
     }
 
-    private void despawnFireball(GameObject c)
-    {
-        Destroy(c);
-    }
-
-    public void setEarlyDetonate(bool val)
+    public void SetEarlyDetonate(bool val)
     {
         earlyDetonate = val;
     }

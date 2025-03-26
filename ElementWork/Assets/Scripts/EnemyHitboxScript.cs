@@ -9,7 +9,7 @@ public class EnemyHitboxScript : MonoBehaviour
         // other.gameObject
         // enemy dmg goes here
         Debug.Log("hit");
-        fbs.setEarlyDetonate(true);
+        fbs.SetEarlyDetonate(true);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

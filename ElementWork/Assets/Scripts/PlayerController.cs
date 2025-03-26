@@ -1,17 +1,22 @@
 // Imports
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
 {
     public PauseMenuScript pms;
     public FireballScript fireball;
+    public SwordScript sword;
     public ElementMenuScript ems;
     public Camera cam;
 
     private int Element = 0;
     private bool inMenu = false;
+    private float cooldown = 10f;
+    private float elapsedTime = 0f;
+    private bool earthOnCD = false;
 
     // Normal variables
     private float moveSpeed = 10;
@@ -48,6 +53,13 @@ public class PlayerController : MonoBehaviour
         {
             inMenu = true;
             ems.Show();
+        }
+
+        if (!sword.getCastable())
+        {
+            setElement(0);
+            earthOnCD = true;
+            StartCoroutine(Cooldown());
         }
 
         if (Input.GetButtonDown("Cancel") && !inMenu)
@@ -88,9 +100,10 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
 
-        if (Input.GetButtonDown("Fire2") && Element == 2 && !inMenu)
+        if (Input.GetButtonDown("Fire2") && Element == 2 && !inMenu && !earthOnCD)
         {
-            // Earth here
+            Debug.Log("Swing");
+            sword.StartCoroutine(sword.Swing());
         }
         else if (Input.GetButtonDown("Fire2") && Element == 3 && !inMenu)
         {
@@ -140,6 +153,17 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    IEnumerator Cooldown()
+    {
+        while (elapsedTime < cooldown)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        earthOnCD = false;
+        yield break;
+    }
+
     public void setInMenu(bool inMenu)
     {
         this.inMenu = inMenu;
@@ -147,6 +171,10 @@ public class PlayerController : MonoBehaviour
 
     public void setElement(int Element)
     {
+        if (Element == 2 && !earthOnCD && this.Element != 2)
+        {
+            StartCoroutine(sword.SwordTimer());
+        }
         this.Element = Element;
     }
 
