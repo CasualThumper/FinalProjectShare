@@ -20,7 +20,7 @@ public class PauseMenuScript : MonoBehaviour
         pauseCanvas.transform.position = v;
         pauseCanvas.transform.LookAt(v);
         pauseCanvas.SetActive(true);
-        cc.setIsPaused(true);
+        cc.SetIsPaused(true);
         Time.timeScale = 0;
     }
 
@@ -29,9 +29,9 @@ public class PauseMenuScript : MonoBehaviour
         Time.timeScale = 1;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         pauseCanvas.SetActive(true);
-        cc.setIsPaused(false);
+        cc.SetIsPaused(false);
         pauseCanvas.SetActive(false);
-        pc.setInMenu(false);
+        pc.SetInMenu(false);
     }
 
     public void OpenSettings()

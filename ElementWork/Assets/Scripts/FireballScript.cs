@@ -10,9 +10,11 @@ public class FireballScript : MonoBehaviour
     public GameObject detonate;
     public Camera cam;
     public CharacterController character;
+    private Animator animator;
+
     private bool earlyDetonate = false;
     private float elapsedTime = 0f;
-    private float duration = 1f;
+    private readonly float duration = 1f;
 
     public void Cast(Vector3 pos, Quaternion rot)
     {
@@ -27,12 +29,13 @@ public class FireballScript : MonoBehaviour
         float x = offset.x;
         float y = character.transform.position.y + 1f;
         float z = 2f;
-        Vector3 final = new Vector3(x, y, z);
+        Vector3 final = new(x, y, z);
         temp.transform.localPosition = final;
         Vector3 world = temp.transform.TransformPoint(final);
         GameObject newFireball = Instantiate(fireball, world, rot);
+        animator = newFireball.GetComponent<Animator>();
 
-        Vector3 offset2 = new Vector3(0, 0, z+10f);
+        Vector3 offset2 = new(0, 0, z+10f);
         final += offset2;
         temp.transform.localPosition = final;
         world = temp.transform.TransformPoint(final);
@@ -44,11 +47,15 @@ public class FireballScript : MonoBehaviour
         while (elapsedTime < duration && !earlyDetonate)
         {
             newFireball.transform.position = Vector3.Lerp(start, end, elapsedTime / duration);
+            newFireball.transform.LookAt(cam.transform);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         earlyDetonate = false;
-        newFireball.transform.position = end;
+        Vector3 yTransform = new(0f, 2f, 0f);
+        newFireball.transform.position -= yTransform;
+        animator.SetTrigger("Detonate");
+        yield return new WaitForSeconds(1);
         elapsedTime = 0f;
         Destroy(newFireball);
         yield break;

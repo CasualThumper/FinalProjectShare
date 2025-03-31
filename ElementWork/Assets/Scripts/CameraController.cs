@@ -86,7 +86,7 @@ public class CameraController : MonoBehaviour
         transform.LookAt(target);
     }
 
-    public void setIsPaused(bool val)
+    public void SetIsPaused(bool val)
     {
         isPaused = val;
     }

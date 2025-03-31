@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ElementMenuScript : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class ElementMenuScript : MonoBehaviour
         menuCanvas.transform.position = v;
         menuCanvas.transform.LookAt(v);
         menuCanvas.SetActive(true);
-        cc.setIsPaused(true);
+        cc.SetIsPaused(true);
         Time.timeScale = 0.2f;
     }
 
@@ -26,12 +28,12 @@ public class ElementMenuScript : MonoBehaviour
     {
         active = false;
         Time.timeScale = 1;
-        pc.setElement(Element);
+        pc.SetElement(Element);
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         menuCanvas.SetActive(true);
-        cc.setIsPaused(false);
+        cc.SetIsPaused(false);
         menuCanvas.SetActive(false);
-        pc.setInMenu(false);
+        pc.SetInMenu(false);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

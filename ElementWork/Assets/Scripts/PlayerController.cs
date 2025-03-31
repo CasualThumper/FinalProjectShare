@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
@@ -11,19 +12,22 @@ public class PlayerController : MonoBehaviour
     public SwordScript sword;
     public ElementMenuScript ems;
     public Camera cam;
+    public Image earthAlpha;
 
     private int Element = 0;
     private bool inMenu = false;
-    private float cooldown = 10f;
-    private float elapsedTime = 0f;
+    private readonly float cooldown = 5f;
     private bool earthOnCD = false;
+    private float earthCDTimer = 0f;
+    private float swordTimer = 0f;
+    private readonly float swordDuration = 5f;
 
     // Normal variables
-    private float moveSpeed = 10;
-    private float jump = 15;
-    private float dashSpeed = 3;
-    private float gravity = 5;
-    private float dashTime = 0.2f;
+    private readonly float moveSpeed = 10f;
+    private readonly float jump = 15f;
+    private readonly float dashSpeed = 3f;
+    private readonly float gravity = 5f;
+    private readonly float dashTime = 0.2f;
     private static int jumpCount = 0;
     private static bool isDashing = false;
     private static bool canDash = true;
@@ -55,17 +59,26 @@ public class PlayerController : MonoBehaviour
             ems.Show();
         }
 
-        if (!sword.getCastable())
-        {
-            setElement(0);
-            earthOnCD = true;
-            StartCoroutine(Cooldown());
-        }
-
         if (Input.GetButtonDown("Cancel") && !inMenu)
         {
             inMenu = true;
             pms.Pause();
+        }
+
+        if (earthOnCD)
+        {
+            float temp = 1 - (earthCDTimer / cooldown);
+            earthAlpha.fillAmount = temp;
+            earthCDTimer += Time.deltaTime;
+        }
+
+        if (sword.GetCastable())
+        {
+            swordTimer += Time.deltaTime;
+            if (swordTimer >= swordDuration)
+            {
+                sword.SetTerminate(true);
+            }
         }
 
         // Temp var to store the current moveDirection's Y component (only the Y value of the Vector3)
@@ -77,7 +90,7 @@ public class PlayerController : MonoBehaviour
          * in a given direction.
          * NOTE: vertical and horizontal are the X and Z components of the vector, meaning they do not control the up and down components
          */
-        moveDirection = (transform.forward * Input.GetAxis("Vertical") * moveSpeed) + (transform.right * Input.GetAxis("Horizontal") * moveSpeed);
+        moveDirection = (Input.GetAxis("Vertical") * moveSpeed * transform.forward) + (transform.right * Input.GetAxis("Horizontal") * moveSpeed);
 
         /*
          * normalized is a property of a Vector3 that recalculates the given vector to have a magnitude of 1
@@ -102,7 +115,6 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Fire2") && Element == 2 && !inMenu && !earthOnCD)
         {
-            Debug.Log("Swing");
             sword.StartCoroutine(sword.Swing());
         }
         else if (Input.GetButtonDown("Fire2") && Element == 3 && !inMenu)
@@ -153,32 +165,46 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    IEnumerator Cooldown()
+    public void StartCD()
     {
-        while (elapsedTime < cooldown)
+        StartCoroutine(CD());
+    }
+
+    public IEnumerator CD()
+    {
+
+        while (earthCDTimer < cooldown)
         {
-            elapsedTime += Time.deltaTime;
             yield return null;
         }
+        earthAlpha.enabled = false;
+        earthCDTimer = 0f;
         earthOnCD = false;
         yield break;
     }
 
-    public void setInMenu(bool inMenu)
+    public void SetInMenu(bool inMenu)
     {
         this.inMenu = inMenu;
     }
 
-    public void setElement(int Element)
+    public void SetElement(int Element)
     {
+        Debug.Log(Element);
+        Debug.Log(this.Element);
         if (Element == 2 && !earthOnCD && this.Element != 2)
         {
-            StartCoroutine(sword.SwordTimer());
+           Debug.Log("Starting");
+           sword.StartCoroutine(sword.SwordStart());
+        }
+        if (Element != 2 && this.Element == 2 && !earthOnCD)
+        {
+            sword.SetTerminate(true);
         }
         this.Element = Element;
     }
 
-    // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a timer running
+    // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a earthCDTimer running
     // Note: this cannot be done with increments in the update function or similar because it varies for those with different fps; the WaitForSeconds class uses time similar to deltaTime
     private IEnumerator Dash()
     {
