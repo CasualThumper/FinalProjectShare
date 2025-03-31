@@ -68,11 +68,11 @@ public class SwordScript : MonoBehaviour
         {
             yield return null;
         }
-        pc.StartCD();
+        castable = false;
+        pc.SetEarthOnCD(true);
         terminate = false;
         swordRenderer.enabled = false;
         animator.SetTrigger("SwordInactive");
-        castable = false;
         yield break;
     }
 
