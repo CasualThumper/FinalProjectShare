@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEditor.Rendering;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public ElementMenuScript ems;
     public Camera cam;
     public Image earthAlpha;
+    public WaterScript water;
+    public GameObject bridge;
 
     private int Element = 0;
     private bool inMenu = false;
@@ -20,7 +23,11 @@ public class PlayerController : MonoBehaviour
     private bool earthOnCD = false;
     private float earthCDTimer = 0f;
     private float swordTimer = 0f;
+    private float bridgeTimer = 0f;
     private readonly float swordDuration = 5f;
+    private readonly float bridgeDuration = 10f;
+    private bool raycastFinished = false;
+    private bool bridgeActive = false;
 
     // Normal variables
     private readonly float moveSpeed = 10f;
@@ -53,6 +60,20 @@ public class PlayerController : MonoBehaviour
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
+        if (bridgeActive)
+        {
+            bridgeTimer += Time.deltaTime;
+        }
+        if(Element == 1)
+        {
+            water.Raycast();
+            if (raycastFinished)
+            {
+                SetElement(0);
+                raycastFinished = false;
+            }
+        }
+
         if (Input.GetButtonDown("Fire1") && !inMenu)
         {
             inMenu = true;
@@ -151,7 +172,7 @@ public class PlayerController : MonoBehaviour
             isDashing = true;
         } else if (Input.GetButtonDown("Fire3") && Element == 1 && !inMenu)
         {
-            // Water here
+            water.Lock();
         }
 
         if (isDashing)
@@ -173,6 +194,17 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void Bridge(GameObject anchor1, GameObject anchor2)
+    {
+        float length = Vector3.Distance(anchor1.transform.position, anchor2.transform.position);
+        Vector3 temp = new(0, 0, length);
+        anchor1.transform.LookAt(anchor2.transform);
+        bridge.transform.SetPositionAndRotation(anchor1.transform.position, anchor1.transform.rotation);
+        bridge.transform.localScale += temp;
+        bridge.SetActive(true);
+        StartCoroutine(BridgeTimer());
+    }
+
     public void SetEarthOnCD (bool onCD)
     {
         earthOnCD = onCD;
@@ -183,6 +215,10 @@ public class PlayerController : MonoBehaviour
         this.inMenu = inMenu;
     }
 
+    public void SetRaycastFinished(bool raycastFinished)
+    {
+        this.raycastFinished = raycastFinished;
+    }
     public void SetElement(int Element)
     {
         if (Element == 2 && !earthOnCD && this.Element != 2)
@@ -194,6 +230,18 @@ public class PlayerController : MonoBehaviour
             sword.SetTerminate(true);
         }
         this.Element = Element;
+    }
+
+    private IEnumerator BridgeTimer()
+    {
+        bridgeActive = true;
+        while (bridgeTimer < bridgeDuration)
+        {
+            yield return null;
+        }
+        bridgeActive = false;
+        bridge.SetActive(false);
+        yield break;
     }
 
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a earthCDTimer running
