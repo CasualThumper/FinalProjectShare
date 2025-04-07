@@ -1,9 +1,7 @@
 // Imports
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine.UI;
-using UnityEditor.Rendering;
 
 // Class; MonoBehaviour is an inherited base class for all Game Objects
 public class PlayerController : MonoBehaviour
@@ -15,7 +13,8 @@ public class PlayerController : MonoBehaviour
     public Camera cam;
     public Image earthAlpha;
     public WaterScript water;
-    public GameObject bridge;
+    public GameObject prefab;
+    public GameObject player;
 
     private int Element = 0;
     private bool inMenu = false;
@@ -28,6 +27,12 @@ public class PlayerController : MonoBehaviour
     private readonly float bridgeDuration = 10f;
     private bool raycastFinished = false;
     private bool bridgeActive = false;
+    private GameObject piece1;
+    private GameObject piece2;
+    private bool piece1Moving = false;
+    private float piece1Time = 0f;
+    private float piece2Time = 0f;
+    private readonly float moveTime = 0.4f;
 
     // Normal variables
     private readonly float moveSpeed = 10f;
@@ -148,7 +153,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetButtonDown("Fire2") && Element == 3 && !inMenu)
         {
-            fireball.Cast(controller.transform.position, controller.transform.rotation);
+            fireball.Cast(player.transform.position, player.transform.rotation);
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -194,15 +199,64 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void Bridge(GameObject anchor1, GameObject anchor2)
+    public IEnumerator Bridge(GameObject anchor1, GameObject anchor2) 
     {
         float length = Vector3.Distance(anchor1.transform.position, anchor2.transform.position);
-        Vector3 temp = new(0, 0, length);
+        GameObject tempGO;
+        Vector3 piecePos = anchor1.transform.position;
+        Vector3 offset = new(0, 10f, 0);
+        int numPieces = (int)(length / 5);
+        float size = length / numPieces;
+        Vector3 sizeScale = new(0, 0, size);
+        float half = size / 2f;
+        piecePos = Vector3.MoveTowards(piecePos, anchor2.transform.position, -half);
         anchor1.transform.LookAt(anchor2.transform);
-        bridge.transform.SetPositionAndRotation(anchor1.transform.position, anchor1.transform.rotation);
-        bridge.transform.localScale += temp;
-        bridge.SetActive(true);
-        StartCoroutine(BridgeTimer());
+        for (int i = 0; i < numPieces; i++)
+        {
+            piecePos = Vector3.MoveTowards(piecePos, anchor2.transform.position, size);
+            tempGO = Instantiate(prefab, piecePos - offset, anchor1.transform.rotation);
+            tempGO.transform.localScale += sizeScale;
+            StartCoroutine(MovePiece(tempGO, piecePos));
+            yield return new WaitForSeconds(0.25f);
+        }
+        bridgeActive = true;
+        while (bridgeTimer < bridgeDuration)
+        {
+            yield return null;
+        }
+        bridgeActive = false;
+        yield break;
+    }
+
+    IEnumerator MovePiece(GameObject go, Vector3 final)
+    {
+        if (!piece1Moving)
+        {
+            piece1 = go;
+            piece1Moving = true;
+            Vector3 start1 = piece1.transform.position;
+            for (int i = 0; i < 40; i++)
+            {
+                piece1.transform.position = Vector3.Lerp(start1, final, (piece1Time / moveTime));
+                piece1Time += 0.01f;
+                yield return new WaitForSeconds(0.01f);
+            }
+            piece1Time = 0f;
+            piece1Moving = false;
+        }
+        else
+        {
+            piece2 = go;
+            Vector3 start2 = piece2.transform.position;
+            for (int i = 0; i < 40; i++)
+            {
+                piece2.transform.position = Vector3.Lerp(start2, final, (piece2Time / moveTime));
+                piece2Time += 0.01f;
+                yield return new WaitForSeconds(0.01f);
+            }
+            piece2Time = 0f;
+        }
+        yield break;
     }
 
     public void SetEarthOnCD (bool onCD)
@@ -230,18 +284,6 @@ public class PlayerController : MonoBehaviour
             sword.SetTerminate(true);
         }
         this.Element = Element;
-    }
-
-    private IEnumerator BridgeTimer()
-    {
-        bridgeActive = true;
-        while (bridgeTimer < bridgeDuration)
-        {
-            yield return null;
-        }
-        bridgeActive = false;
-        bridge.SetActive(false);
-        yield break;
     }
 
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a earthCDTimer running

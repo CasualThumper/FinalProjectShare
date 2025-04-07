@@ -1,7 +1,5 @@
 // Imports
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.LowLevelPhysics;
 
 public class CameraController : MonoBehaviour
 {
@@ -10,8 +8,8 @@ public class CameraController : MonoBehaviour
     // Normal variables
     private Vector3 offset = new Vector3(0, 0, 0);
     public float rotateSpeed;
-    private float maxViewAngle = 65f;
-    private float minViewAngle = -60f;
+    private readonly float maxViewAngle = 65f;
+    private readonly float minViewAngle = -60f;
 
     // Special variables; transform is a data type that stores the 3 main components of a transformation in 3 dimensional space: position, rotation, and scale 
     public Transform target;
@@ -40,7 +38,6 @@ public class CameraController : MonoBehaviour
     {
         if (!isPaused)
         {
-
             // Gets the X and Y-axis values from the mouse and rotates the transformations accordingly
             // NOTE: the target is referenced here because we want the character to move in accordance with the mouse left / right; camera auto-adjusts
             float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
@@ -65,7 +62,6 @@ public class CameraController : MonoBehaviour
             {
                 pivot.rotation = Quaternion.Euler(360f + minViewAngle, 0, 0);
             }
-
         }
 
         // Creating a new Quaternion using a Euler Angle that uses the x and y components we want for the rotation

@@ -1,15 +1,13 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 public class FireballScript : MonoBehaviour
 {
-
     public PlayerController pc;
     public GameObject fireball;
     public GameObject detonate;
     public Camera cam;
-    public CharacterController character;
+    public GameObject player;
     private Animator animator;
 
     private bool earlyDetonate = false;
@@ -23,11 +21,12 @@ public class FireballScript : MonoBehaviour
             return;
         }
         GameObject temp = Instantiate(detonate, pos, rot);
-        temp.transform.SetParent(character.transform);
+        GameObject tempParent = Instantiate(detonate, pos, rot);
+        temp.transform.SetParent(tempParent.transform);
 
         Vector3 offset = cam.transform.localPosition;
         float x = offset.x;
-        float y = character.transform.position.y + 1f;
+        float y = 1f;
         float z = 2f;
         Vector3 final = new(x, y, z);
         temp.transform.localPosition = final;
@@ -38,8 +37,10 @@ public class FireballScript : MonoBehaviour
         Vector3 offset2 = new(0, 0, z+10f);
         final += offset2;
         temp.transform.localPosition = final;
-        world = temp.transform.TransformPoint(final);
-        StartCoroutine(MoveFireball(newFireball, newFireball.transform.position, world));
+        Vector3 world2 = temp.transform.TransformPoint(final);
+        Destroy(temp);
+        Destroy(tempParent);
+        StartCoroutine(MoveFireball(newFireball, world, world2));
     }
 
     IEnumerator MoveFireball(GameObject newFireball, Vector3 start, Vector3 end)

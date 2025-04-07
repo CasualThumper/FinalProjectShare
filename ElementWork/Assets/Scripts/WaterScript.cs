@@ -1,9 +1,10 @@
-using Unity.Hierarchy;
 using UnityEngine;
 
 public class WaterScript : MonoBehaviour
 {
     public Camera cam;
+    public Camera tempCam;
+    public GameObject tempCharacter;
     public GameObject character;
     public PlayerController pc;
     public GameObject anchor1;
@@ -11,7 +12,6 @@ public class WaterScript : MonoBehaviour
     private bool instantiatedAnchor1 = false;
     private bool instantiatedAnchor2 = false;
     private bool anchor1Locked = false;
-
 
     public void Raycast()
     {
@@ -25,14 +25,20 @@ public class WaterScript : MonoBehaviour
             instantiatedAnchor2 = true;
             anchor2.SetActive(true);
         }
-        Ray ray = cam.ScreenPointToRay(character.transform.position);
+        Vector3 v3 = character.transform.position;
+        v3.y += 3f;
+        tempCharacter.transform.position = v3;
+        tempCam.transform.position = cam.transform.position;
+        tempCam.transform.LookAt(tempCharacter.transform.position);
+        Vector3 dir = tempCam.transform.TransformDirection(Vector3.forward);
         RaycastHit hit;
-        Physics.Raycast(ray, out hit, 10000f, 3);
+        LayerMask mask = LayerMask.GetMask("Raycast");
+        Physics.Raycast(tempCam.transform.position, dir, out hit, 10000f, mask);
         Vector3 temp = hit.point;
-        cam.transform.TransformPoint(temp);
         if (anchor1Locked)
         {
             anchor2.transform.position = temp;
+            anchor1.transform.LookAt(temp);
         } 
         else
         {
@@ -45,15 +51,15 @@ public class WaterScript : MonoBehaviour
         if (anchor1Locked)
         {
             pc.SetRaycastFinished(true);
-            pc.Bridge(anchor1, anchor2);
+            StartCoroutine(pc.Bridge(anchor1, anchor2));
             Deactivate();
         }
         else
         {
             anchor1Locked = true;
-            anchor1.transform.LookAt(cam.transform);
-            Quaternion flat = Quaternion.Euler(0f, anchor1.transform.rotation.y, 0f);
-            anchor1.transform.rotation = flat;
+            anchor1.transform.LookAt(anchor2.transform);
+            //Quaternion flat = Quaternion.Euler(0f, anchor1.transform.rotation.y, 0f);
+            //anchor1.transform.rotation = flat;
         }
     }
 

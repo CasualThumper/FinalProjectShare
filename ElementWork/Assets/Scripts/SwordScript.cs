@@ -1,16 +1,12 @@
 using UnityEngine;
 using System.Collections;
-using static UnityEngine.Rendering.DebugUI.Table;
-using Unity.VisualScripting;
 
 public class SwordScript : MonoBehaviour
 {
     private Animator animator;
 
     public PlayerController pc;
-    public GameObject sword;
     public SkinnedMeshRenderer swordRenderer;
-    public GameObject swordTemp;
     public Camera cam;
     public CharacterController character;
     public CapsuleCollider capColl;
