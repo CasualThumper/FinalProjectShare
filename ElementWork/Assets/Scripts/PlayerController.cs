@@ -244,11 +244,13 @@ public class PlayerController : MonoBehaviour
             if (walkCheck1 == walkCheck2)
             {
                 isWalking = false;
+                animator.ResetTrigger("IsWalking");
                 animator.SetTrigger("IsNotWalking");
             }
             else if (jumpCount == 0)
             {
                 isWalking = true;
+                animator.ResetTrigger("IsNotWalking");
                 animator.SetTrigger("IsWalking");
             }
         }
