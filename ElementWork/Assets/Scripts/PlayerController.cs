@@ -67,15 +67,8 @@ public class PlayerController : MonoBehaviour
 
         if (earthOnCD)
         {
-            earthAlpha.enabled = true;
             float temp = 1 - (earthCDTimer / cooldown);
             earthAlpha.fillAmount = temp;
-            if (earthCDTimer >= cooldown)
-            {
-                earthAlpha.enabled = false;
-                earthCDTimer = 0f;
-                earthOnCD = false;
-            }
             earthCDTimer += Time.deltaTime;
         }
 
@@ -85,7 +78,6 @@ public class PlayerController : MonoBehaviour
             if (swordTimer >= swordDuration)
             {
                 sword.SetTerminate(true);
-                swordTimer = 0f;
             }
         }
 
@@ -173,9 +165,22 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void SetEarthOnCD (bool onCD)
+    public void StartCD()
     {
-        earthOnCD = onCD;
+        StartCoroutine(CD());
+    }
+
+    public IEnumerator CD()
+    {
+
+        while (earthCDTimer < cooldown)
+        {
+            yield return null;
+        }
+        earthAlpha.enabled = false;
+        earthCDTimer = 0f;
+        earthOnCD = false;
+        yield break;
     }
 
     public void SetInMenu(bool inMenu)
@@ -185,11 +190,14 @@ public class PlayerController : MonoBehaviour
 
     public void SetElement(int Element)
     {
+        Debug.Log(Element);
+        Debug.Log(this.Element);
         if (Element == 2 && !earthOnCD && this.Element != 2)
         {
-           StartCoroutine(sword.SwordStart());
+           Debug.Log("Starting");
+           sword.StartCoroutine(sword.SwordStart());
         }
-        if (Element != 2 && this.Element == 2 && !earthOnCD && sword.GetCastable())
+        if (Element != 2 && this.Element == 2 && !earthOnCD)
         {
             sword.SetTerminate(true);
         }
