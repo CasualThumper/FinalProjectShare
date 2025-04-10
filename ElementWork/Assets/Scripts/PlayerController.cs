@@ -24,14 +24,13 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
 
 
-    private int element = 0;
+    private int Element = 0;
 
     private bool inMenu = false;
     private bool earthOnCD = false;
     private bool raycastFinished = false;
     private bool bridgeActive = false;
     private bool piece1Moving = false;
-    private bool swordActive = false;
     public bool isWalking = false;
 
     private readonly float cooldown = 5f;
@@ -77,11 +76,12 @@ public class PlayerController : MonoBehaviour
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
+
         if (bridgeActive)
         {
             bridgeTimer += Time.deltaTime;
         }
-        if(element == 1)
+        if(Element == 1)
         {
             water.Raycast();
             if (raycastFinished)
@@ -105,10 +105,6 @@ public class PlayerController : MonoBehaviour
 
         if (earthOnCD)
         {
-            if (swordActive)
-            {
-                swordActive = false;
-            }
             earthAlpha.enabled = true;
             float temp = 1 - (earthCDTimer / cooldown);
             earthAlpha.fillAmount = temp;
@@ -140,7 +136,7 @@ public class PlayerController : MonoBehaviour
          * in a given direction.
          * NOTE: vertical and horizontal are the X and Z components of the vector, meaning they do not control the up and down components
          */
-        moveDirection = (Input.GetAxisRaw("Vertical") * moveSpeed * transform.forward) + (Input.GetAxisRaw("Horizontal") * moveSpeed * transform.right);
+        moveDirection = (Input.GetAxis("Vertical") * moveSpeed * transform.forward) + (transform.right * Input.GetAxis("Horizontal") * moveSpeed);
 
         /*
          * normalized is a property of a Vector3 that recalculates the given vector to have a magnitude of 1
@@ -158,63 +154,42 @@ public class PlayerController : MonoBehaviour
             if (!isDashing)
             {
                 canDash = true;
-                if (jumpCount > 0)
-                {
-                    if (!isWalking && !swordActive)
-                    {
-                        animator.SetInteger("State", 0);
-                    }
-                    else if (isWalking && !swordActive)
-                    {
-                        animator.SetInteger("State", 1);
-                    }
-                    else if (!isWalking && swordActive)
-                    {
-                        animator.SetInteger("State", 10);
-                    }
-                    else
-                    {
-                        animator.SetInteger("State", 11);
-                    }
-                }
             }
             animator.SetTrigger("NotJumping");
             moveDirection.y = 0f;
             jumpCount = 0;
         }
 
-        if (Input.GetButtonDown("Fire2") && element == 2 && !inMenu && !earthOnCD)
+        if (Input.GetButtonDown("Fire2") && Element == 2 && !inMenu && !earthOnCD)
         {
             sword.StartCoroutine(sword.Swing());
         }
-        else if (Input.GetButtonDown("Fire2") && element == 3 && !inMenu)
+        else if (Input.GetButtonDown("Fire2") && Element == 3 && !inMenu)
         {
             fireball.Cast(player.transform.position, player.transform.rotation);
         }
-        else if (Input.GetButtonDown("Fire2") && element == 1 && !inMenu)
+        else if (Input.GetButtonDown("Fire2") && Element == 1 && !inMenu)
         {
             water.Lock();
         }
 
         if (Input.GetButtonDown("Jump"))
         {
-            if (element == 4 && jumpCount < 2 && !isDashing)
+            if (Element == 4 && jumpCount < 2 && !isDashing)
             {
-                animator.ResetTrigger("NotJumping");
                 animator.SetTrigger("Jumping");
                 moveDirection.y = jump;
                 jumpCount += 1;
             }
             else if (jumpCount < 1)
             {
-                animator.ResetTrigger("NotJumping");
                 animator.SetTrigger("Jumping");
                 moveDirection.y = jump;
                 jumpCount += 1;
             }
         }
 
-        if (Input.GetButtonDown("Fire3") && !isDashing && canDash && element == 4 && !inMenu)
+        if (Input.GetButtonDown("Fire3") && !isDashing && canDash && Element == 4 && !inMenu)
         {
             canDash = false;
             StartCoroutine(Dash());
@@ -237,21 +212,20 @@ public class PlayerController : MonoBehaviour
             // deltaTime allows for the fps of the host to not impact the move speed of the character
 
             Vector3 walkCheck1 = controller.transform.position;
-            walkCheck1.y = 0f;
             controller.Move(moveDirection * Time.deltaTime);
             Vector3 walkCheck2 = controller.transform.position;
-            walkCheck2.y = 0f;
-            if (walkCheck1 == walkCheck2)
+            if(walkCheck1 == walkCheck2)
             {
                 isWalking = false;
                 animator.SetTrigger("IsNotWalking");
             }
-            else if (jumpCount == 0)
+            else
             {
                 isWalking = true;
                 animator.SetTrigger("IsWalking");
             }
         }
+
     }
 
     public IEnumerator Bridge(GameObject anchor1, GameObject anchor2) 
@@ -328,20 +302,18 @@ public class PlayerController : MonoBehaviour
     {
         this.raycastFinished = raycastFinished;
     }
-    public void SetElement(int element)
+    public void SetElement(int Element)
     {
-        if (element == 2 && !earthOnCD && this.element != 2)
+        if (Element == 2 && !earthOnCD && this.Element != 2)
         {
            StartCoroutine(sword.SwordStart());
-           swordActive = true;
         }
-        if (element != 2 && this.element == 2 && !earthOnCD && sword.GetCastable())
+        if (Element != 2 && this.Element == 2 && !earthOnCD && sword.GetCastable())
         {
             sword.SetTerminate(true);
         }
-        this.element = element;
+        this.Element = Element;
     }
-
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a earthCDTimer running
     // Note: this cannot be done with increments in the update function or similar because it varies for those with different fps; the WaitForSeconds class uses time similar to deltaTime
     private IEnumerator Dash()
