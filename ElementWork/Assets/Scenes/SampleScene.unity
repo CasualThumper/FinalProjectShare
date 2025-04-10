@@ -4062,8 +4062,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bc733f6284a9c240a325705daf9d8cf, type: 3}
-<<<<<<< HEAD
-=======
 --- !u!1 &1132918195
 GameObject:
   m_ObjectHideFlags: 0
@@ -4172,7 +4170,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 --- !u!1 &1215807670
 GameObject:
   m_ObjectHideFlags: 0
@@ -5473,8 +5470,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &1525612405
 GameObject:
   m_ObjectHideFlags: 0
@@ -5583,7 +5578,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 --- !u!1 &1557524194
 GameObject:
   m_ObjectHideFlags: 0
@@ -7706,8 +7700,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73006a33b193bc94d819ec8b25b1c42e, type: 3}
-<<<<<<< HEAD
-=======
 --- !u!1 &2122566787
 GameObject:
   m_ObjectHideFlags: 0
@@ -7817,7 +7809,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -3.752, y: 0, z: 0}
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 --- !u!1 &2123084548
 GameObject:
   m_ObjectHideFlags: 0
@@ -7830,7 +7821,7 @@ GameObject:
   - component: {fileID: 2123084551}
   - component: {fileID: 2123084550}
   - component: {fileID: 2123084549}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10962,12 +10953,9 @@ MonoBehaviour:
   ems: {fileID: 1959886565}
   cam: {fileID: 330585545}
   earthAlpha: {fileID: 984129402}
-<<<<<<< HEAD
-=======
   water: {fileID: 0}
   prefab: {fileID: 6554377489409689120, guid: 15e816ab709993e419fcf838ecb2dd1b, type: 3}
   player: {fileID: 2809087173985886785}
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 --- !u!4 &5524935148477414958
 Transform:
   m_ObjectHideFlags: 0
@@ -12653,6 +12641,7 @@ SceneRoots:
   - {fileID: 1557524198}
   - {fileID: 479816115840142367}
   - {fileID: 2123084552}
+  - {fileID: 2122566791}
   - {fileID: 2146372616}
   - {fileID: 243250786}
   - {fileID: 1013528251}
@@ -12664,12 +12653,8 @@ SceneRoots:
   - {fileID: 741239574738794304}
   - {fileID: 2361262998849790794}
   - {fileID: 1564201062}
-<<<<<<< HEAD
-  - {fileID: 4308153951712331185}
-=======
   - {fileID: 1132918200}
   - {fileID: 1525612410}
   - {fileID: 8509799771609100819}
   - {fileID: 1073929657}
   - {fileID: 1663786507}
->>>>>>> parent of 619adca (Revert "Element Finished Commit")

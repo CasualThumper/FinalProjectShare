@@ -12,12 +12,9 @@ public class PlayerController : MonoBehaviour
     public ElementMenuScript ems;
     public Camera cam;
     public Image earthAlpha;
-<<<<<<< HEAD
-=======
     public WaterScript water;
     public GameObject prefab;
     public GameObject player;
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 
     private int Element = 0;
     private bool inMenu = false;
@@ -25,9 +22,8 @@ public class PlayerController : MonoBehaviour
     private bool earthOnCD = false;
     private float earthCDTimer = 0f;
     private float swordTimer = 0f;
+    private float bridgeTimer = 0f;
     private readonly float swordDuration = 5f;
-<<<<<<< HEAD
-=======
     private readonly float bridgeDuration = 10f;
     private bool raycastFinished = false;
     private bool bridgeActive = false;
@@ -37,7 +33,6 @@ public class PlayerController : MonoBehaviour
     private float piece1Time = 0f;
     private float piece2Time = 0f;
     private readonly float moveTime = 0.4f;
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
 
     // Normal variables
     private readonly float moveSpeed = 10f;
@@ -70,6 +65,20 @@ public class PlayerController : MonoBehaviour
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
+        if (bridgeActive)
+        {
+            bridgeTimer += Time.deltaTime;
+        }
+        if(Element == 1)
+        {
+            water.Raycast();
+            if (raycastFinished)
+            {
+                SetElement(0);
+                raycastFinished = false;
+            }
+        }
+
         if (Input.GetButtonDown("Fire1") && !inMenu)
         {
             inMenu = true;
@@ -168,7 +177,7 @@ public class PlayerController : MonoBehaviour
             isDashing = true;
         } else if (Input.GetButtonDown("Fire3") && Element == 1 && !inMenu)
         {
-            // Water here
+            water.Lock();
         }
 
         if (isDashing)
@@ -190,8 +199,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-<<<<<<< HEAD
-=======
     public IEnumerator Bridge(GameObject anchor1, GameObject anchor2) 
     {
         float length = Vector3.Distance(anchor1.transform.position, anchor2.transform.position);
@@ -252,7 +259,6 @@ public class PlayerController : MonoBehaviour
         yield break;
     }
 
->>>>>>> parent of 619adca (Revert "Element Finished Commit")
     public void SetEarthOnCD (bool onCD)
     {
         earthOnCD = onCD;
@@ -263,6 +269,10 @@ public class PlayerController : MonoBehaviour
         this.inMenu = inMenu;
     }
 
+    public void SetRaycastFinished(bool raycastFinished)
+    {
+        this.raycastFinished = raycastFinished;
+    }
     public void SetElement(int Element)
     {
         if (Element == 2 && !earthOnCD && this.Element != 2)
