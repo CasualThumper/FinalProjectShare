@@ -10,54 +10,44 @@ public class PlayerController : MonoBehaviour
     public FireballScript fireball;
     public SwordScript sword;
     public ElementMenuScript ems;
-    public WaterScript water;
-
     public Camera cam;
     public Image earthAlpha;
-
+    public WaterScript water;
     public GameObject prefab;
     public GameObject player;
 
-    private GameObject piece1;
-    private GameObject piece2;
-
-    private Animator animator;
-
-
     private int Element = 0;
-
     private bool inMenu = false;
-    private bool earthOnCD = false;
-    private bool raycastFinished = false;
-    private bool bridgeActive = false;
-    private bool piece1Moving = false;
-    public bool isWalking = false;
-
     private readonly float cooldown = 5f;
-    private readonly float swordDuration = 5f;
-    private readonly float bridgeDuration = 10f;
-    private readonly float moveTime = 0.4f;
+    private bool earthOnCD = false;
     private float earthCDTimer = 0f;
     private float swordTimer = 0f;
     private float bridgeTimer = 0f;
+    private readonly float swordDuration = 5f;
+    private readonly float bridgeDuration = 10f;
+    private bool raycastFinished = false;
+    private bool bridgeActive = false;
+    private GameObject piece1;
+    private GameObject piece2;
+    private bool piece1Moving = false;
     private float piece1Time = 0f;
     private float piece2Time = 0f;
+    private readonly float moveTime = 0.4f;
 
-
-
+    // Normal variables
     private readonly float moveSpeed = 10f;
     private readonly float jump = 15f;
     private readonly float dashSpeed = 3f;
     private readonly float gravity = 5f;
-    private readonly float dashTime = 0.3f;
-
+    private readonly float dashTime = 0.2f;
     private static int jumpCount = 0;
-
     private static bool isDashing = false;
     private static bool canDash = true;
 
+    // Special variables; CharacterController is a class that allows for movement of an object that needs to be constrained by collisions
     private CharacterController controller;
 
+    // Vector 3 is a struct that is a representation of vectors / points - used for manipulation of positions and moving directions
     private Vector3 moveDirection;
 
     // Start function; called only once in the life cycle of a funcion; second funcion called - only after awake (if applicable)
@@ -66,7 +56,6 @@ public class PlayerController : MonoBehaviour
     {
         pms.ResumeGame();
         ems.Hide(0);
-        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         // GetComponent: gets a reference to a component of a given type T (CharacterController in this case) from the same GameObject
         // that the script is attached to (the "Player" Object in this case
@@ -76,7 +65,6 @@ public class PlayerController : MonoBehaviour
     // Update Function: function that is called every frame that the given MonoBehavior is enabled (once a frame upon class initialization)
     void Update()
     {
-
         if (bridgeActive)
         {
             bridgeTimer += Time.deltaTime;
@@ -155,7 +143,6 @@ public class PlayerController : MonoBehaviour
             {
                 canDash = true;
             }
-            animator.SetTrigger("NotJumping");
             moveDirection.y = 0f;
             jumpCount = 0;
         }
@@ -168,22 +155,16 @@ public class PlayerController : MonoBehaviour
         {
             fireball.Cast(player.transform.position, player.transform.rotation);
         }
-        else if (Input.GetButtonDown("Fire2") && Element == 1 && !inMenu)
-        {
-            water.Lock();
-        }
 
         if (Input.GetButtonDown("Jump"))
         {
             if (Element == 4 && jumpCount < 2 && !isDashing)
             {
-                animator.SetTrigger("Jumping");
                 moveDirection.y = jump;
                 jumpCount += 1;
             }
             else if (jumpCount < 1)
             {
-                animator.SetTrigger("Jumping");
                 moveDirection.y = jump;
                 jumpCount += 1;
             }
@@ -193,8 +174,10 @@ public class PlayerController : MonoBehaviour
         {
             canDash = false;
             StartCoroutine(Dash());
-            animator.SetTrigger("IsDashing");
             isDashing = true;
+        } else if (Input.GetButtonDown("Fire3") && Element == 1 && !inMenu)
+        {
+            water.Lock();
         }
 
         if (isDashing)
@@ -209,21 +192,9 @@ public class PlayerController : MonoBehaviour
             // Calculates the gravity component of the vector so that gravity affects the character; gravity.y is the gravity constant
             // gravity is our own gravity multiplier
             moveDirection.y += (Physics.gravity.y * gravity * Time.deltaTime);
-            // deltaTime allows for the fps of the host to not impact the move speed of the character
 
-            Vector3 walkCheck1 = controller.transform.position;
+            // deltaTime allows for the fps of the host to not impact the move speed of the character
             controller.Move(moveDirection * Time.deltaTime);
-            Vector3 walkCheck2 = controller.transform.position;
-            if(walkCheck1 == walkCheck2)
-            {
-                isWalking = false;
-                animator.SetTrigger("IsNotWalking");
-            }
-            else
-            {
-                isWalking = true;
-                animator.SetTrigger("IsWalking");
-            }
         }
 
     }
@@ -314,6 +285,7 @@ public class PlayerController : MonoBehaviour
         }
         this.Element = Element;
     }
+
     // Coroutine function; acts as a function that can "run in the background" allowing for other functions like Update() to execute while still keeping a earthCDTimer running
     // Note: this cannot be done with increments in the update function or similar because it varies for those with different fps; the WaitForSeconds class uses time similar to deltaTime
     private IEnumerator Dash()
