@@ -4074,6 +4074,7 @@ GameObject:
   - component: {fileID: 1132918199}
   - component: {fileID: 1132918197}
   - component: {fileID: 1132918196}
+  - component: {fileID: 1132918201}
   m_Layer: 0
   m_Name: Anchor1
   m_TagString: Untagged
@@ -4170,6 +4171,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1132918201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1132918195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68b12f9dc73edf34ab270411f10bea2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 330585545}
+  tempCam: {fileID: 1663786506}
+  tempCharacter: {fileID: 1073929653}
+  character: {fileID: 2809087173985886785}
+  pc: {fileID: 5501159739086100007}
+  anchor1: {fileID: 1132918195}
+  anchor2: {fileID: 1525612405}
 --- !u!1 &1215807670
 GameObject:
   m_ObjectHideFlags: 0
@@ -7559,33 +7579,6 @@ MonoBehaviour:
   water: {fileID: 1516487120}
   endMenuSuccess: {fileID: 1337047305}
   endMenuFail: {fileID: 1877122746}
---- !u!54 &1964602111
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2809087173985886785}
-  serializedVersion: 4
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 0
-  m_ImplicitTensor: 0
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &1965125230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8165,7 +8158,7 @@ Transform:
   m_GameObject: {fileID: 2809087173985886785}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 54, y: 0, z: 90}
+  m_LocalPosition: {x: 54, y: 0.39, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8585,7 +8578,6 @@ GameObject:
   - component: {fileID: 1248027378097100434}
   - component: {fileID: 1248027378097100437}
   - component: {fileID: 1248027378097100436}
-  - component: {fileID: 1248027378097100435}
   m_Layer: 2
   m_Name: Armature
   m_TagString: Untagged
@@ -8674,33 +8666,6 @@ Transform:
   - {fileID: 3545899211521635838}
   m_Father: {fileID: 6882383957109045694}
   m_LocalEulerAnglesHint: {x: -181.62, y: 211.907, z: 73.269}
---- !u!54 &1248027378097100435
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850661476116454616}
-  serializedVersion: 4
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &1248027378097100436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9863,7 +9828,6 @@ GameObject:
   - component: {fileID: 1964602106}
   - component: {fileID: 6527051115251790504}
   - component: {fileID: 1995937390478326588}
-  - component: {fileID: 1964602111}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -10951,11 +10915,12 @@ MonoBehaviour:
   fireball: {fileID: 741239574738794306}
   sword: {fileID: 1248027378097100436}
   ems: {fileID: 1959886565}
+  water: {fileID: 1132918201}
   cam: {fileID: 330585545}
   earthAlpha: {fileID: 984129402}
-  water: {fileID: 0}
   prefab: {fileID: 6554377489409689120, guid: 15e816ab709993e419fcf838ecb2dd1b, type: 3}
   player: {fileID: 2809087173985886785}
+  isWalking: 0
 --- !u!4 &5524935148477414958
 Transform:
   m_ObjectHideFlags: 0
