@@ -7018,6 +7018,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1804448480}
+  - component: {fileID: 1804448481}
+  - component: {fileID: 1804448482}
   m_Layer: 2
   m_Name: Sword
   m_TagString: Untagged
@@ -7033,14 +7035,64 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804448479}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.22995189, y: -0.90034986, z: -0.36599365, w: -0.05040751}
-  m_LocalPosition: {x: 1.4660263, y: 5.422276, z: 0.34526062}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.063910834, y: -0.89709044, z: 0.3661061, w: -0.23897809}
+  m_LocalPosition: {x: 0.09725952, y: 5.2209272, z: 3.6660004}
+  m_LocalScale: {x: 1, y: 6, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7917670210270348812}
   m_Father: {fileID: 5524935148477414958}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 43.425, y: 148.269, z: -4.764}
+--- !u!136 &1804448481
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804448479}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.25
+  m_Height: 1.3
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1804448482
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804448479}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1825471411
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7837,7 +7889,7 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 0
@@ -8158,7 +8210,7 @@ Transform:
   m_GameObject: {fileID: 2809087173985886785}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 54, y: 0.39, z: 90}
+  m_LocalPosition: {x: 54, y: 0.5, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8576,7 +8628,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1248027378097100434}
-  - component: {fileID: 1248027378097100437}
   - component: {fileID: 1248027378097100436}
   m_Layer: 2
   m_Name: Armature
@@ -8682,30 +8733,7 @@ MonoBehaviour:
   swordRenderer: {fileID: 3172720515418418241}
   cam: {fileID: 330585545}
   character: {fileID: 6527051115251790504}
-  capColl: {fileID: 1248027378097100437}
---- !u!136 &1248027378097100437
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850661476116454616}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.2
-  m_Height: 1
-  m_Direction: 2
-  m_Center: {x: 0.1, y: 0.17, z: 0.5}
+  capColl: {fileID: 1804448481}
 --- !u!1 &1260680849608824775
 GameObject:
   m_ObjectHideFlags: 0
@@ -9251,7 +9279,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 8c1771000d9f2b04e819cc46342d3b61, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -10920,7 +10948,11 @@ MonoBehaviour:
   earthAlpha: {fileID: 984129402}
   prefab: {fileID: 6554377489409689120, guid: 15e816ab709993e419fcf838ecb2dd1b, type: 3}
   player: {fileID: 2809087173985886785}
+  armature: {fileID: 850661476116454616}
+  capColl: {fileID: 1804448481}
   isWalking: 0
+  isDashing: 0
+  canDash: 1
 --- !u!4 &5524935148477414958
 Transform:
   m_ObjectHideFlags: 0
@@ -11437,7 +11469,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.0001
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6539660819983962233
 GameObject:

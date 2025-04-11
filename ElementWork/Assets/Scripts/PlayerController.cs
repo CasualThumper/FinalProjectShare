@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
 
     public GameObject prefab;
     public GameObject player;
+    public GameObject armature;
+
+    public CapsuleCollider capColl;
 
     private GameObject piece1;
     private GameObject piece2;
@@ -34,8 +37,8 @@ public class PlayerController : MonoBehaviour
     private bool swordActive = false;
     public bool isWalking = false;
 
-    private readonly float cooldown = 5f;
-    private readonly float swordDuration = 5f;
+    private readonly float cooldown = 7f;
+    private readonly float swordDuration = 15f;
     private readonly float bridgeDuration = 10f;
     private readonly float moveTime = 0.4f;
     private float earthCDTimer = 0f;
@@ -47,15 +50,16 @@ public class PlayerController : MonoBehaviour
 
 
     private readonly float moveSpeed = 10f;
-    private readonly float jump = 15f;
+    private readonly float jump = 17f;
+    private readonly float doubleJump = 22f;
     private readonly float dashSpeed = 3f;
     private readonly float gravity = 5f;
     private readonly float dashTime = 0.3f;
 
-    private static int jumpCount = 0;
+    private int jumpCount = 0;
 
-    private static bool isDashing = false;
-    private static bool canDash = true;
+    private bool isDashing = false;
+    private bool canDash = true;
 
     private CharacterController controller;
 
@@ -153,11 +157,16 @@ public class PlayerController : MonoBehaviour
         // that moving in a direciton and jumping would be slower than moving in a direction normally - not what we want
         moveDirection.y = yStore;
 
+        Debug.Log(controller.isGrounded);
+        if (controller.isGrounded && !isDashing)
+        {
+            canDash = true;
+        }
+
         if (controller.isGrounded)
         {
             if (!isDashing)
             {
-                canDash = true;
                 if (jumpCount > 0)
                 {
                     if (!isWalking && !swordActive)
@@ -198,18 +207,18 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            if (element == 4 && jumpCount < 2 && !isDashing)
+            if (jumpCount < 1)
             {
                 animator.ResetTrigger("NotJumping");
                 animator.SetTrigger("Jumping");
                 moveDirection.y = jump;
                 jumpCount += 1;
             }
-            else if (jumpCount < 1)
+            else if (element == 4 && jumpCount < 2 && !isDashing)
             {
-                animator.ResetTrigger("NotJumping");
+                animator.ResetTrigger("Jumping");
                 animator.SetTrigger("Jumping");
-                moveDirection.y = jump;
+                moveDirection.y = doubleJump;
                 jumpCount += 1;
             }
         }
@@ -217,9 +226,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Fire3") && !isDashing && canDash && element == 4 && !inMenu)
         {
             canDash = false;
-            StartCoroutine(Dash());
+            animator.ResetTrigger("Jumping");
             animator.SetTrigger("IsDashing");
-            isDashing = true;
+            StartCoroutine(Dash());
         }
 
         if (isDashing)
@@ -334,7 +343,13 @@ public class PlayerController : MonoBehaviour
     {
         if (element == 2 && !earthOnCD && this.element != 2)
         {
-           StartCoroutine(sword.SwordStart());
+            capColl.transform.SetPositionAndRotation(armature.transform.position, armature.transform.rotation);
+            capColl.transform.SetParent(armature.transform);
+            Vector3 tempSwordChange = capColl.transform.localPosition;
+            tempSwordChange.z += 0.5f;
+            tempSwordChange.y += 0.15f;
+            capColl.transform.localPosition = tempSwordChange;
+            StartCoroutine(sword.SwordStart());
            swordActive = true;
         }
         if (element != 2 && this.element == 2 && !earthOnCD && sword.GetCastable())
@@ -348,8 +363,10 @@ public class PlayerController : MonoBehaviour
     // Note: this cannot be done with increments in the update function or similar because it varies for those with different fps; the WaitForSeconds class uses time similar to deltaTime
     private IEnumerator Dash()
     {
+        isDashing = true;
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
+        animator.ResetTrigger("IsDashing");
         yield break;
     }
 }
