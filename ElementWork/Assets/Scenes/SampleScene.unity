@@ -10951,8 +10951,6 @@ MonoBehaviour:
   armature: {fileID: 850661476116454616}
   capColl: {fileID: 1804448481}
   isWalking: 0
-  isDashing: 0
-  canDash: 1
 --- !u!4 &5524935148477414958
 Transform:
   m_ObjectHideFlags: 0
@@ -11644,7 +11642,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6695136689025658637}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.1491196, y: 0.21039708, z: 0.36457103, w: -0.89475375}
+  m_LocalRotation: {x: 0.14911965, y: -0.21039721, z: -0.364571, w: 0.89475375}
   m_LocalPosition: {x: 0.01, y: 1.915, z: 0.033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

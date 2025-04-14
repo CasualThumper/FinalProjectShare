@@ -157,7 +157,6 @@ public class PlayerController : MonoBehaviour
         // that moving in a direciton and jumping would be slower than moving in a direction normally - not what we want
         moveDirection.y = yStore;
 
-        Debug.Log(controller.isGrounded);
         if (controller.isGrounded && !isDashing)
         {
             canDash = true;
