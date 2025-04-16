@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
 
+    private GameObject[] pieces;
 
     private int element = 0;
 
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private readonly float cooldown = 7f;
     private readonly float swordDuration = 15f;
-    private readonly float bridgeDuration = 10f;
+    private readonly float bridgeDuration = 5f;
     private readonly float moveTime = 0.4f;
     private float earthCDTimer = 0f;
     private float swordTimer = 0f;
@@ -271,6 +272,7 @@ public class PlayerController : MonoBehaviour
         Vector3 piecePos = anchor1.transform.position;
         Vector3 offset = new(0, 10f, 0);
         int numPieces = (int)(length / 5);
+        pieces = new GameObject[numPieces];
         float size = length / numPieces;
         Vector3 sizeScale = new(0, 0, size);
         float half = size / 2f;
@@ -280,6 +282,7 @@ public class PlayerController : MonoBehaviour
         {
             piecePos = Vector3.MoveTowards(piecePos, anchor2.transform.position, size);
             tempGO = Instantiate(prefab, piecePos - offset, anchor1.transform.rotation);
+            pieces[i] = tempGO;
             tempGO.transform.localScale += sizeScale;
             StartCoroutine(MovePiece(tempGO, piecePos));
             yield return new WaitForSeconds(0.25f);
@@ -290,6 +293,12 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         bridgeActive = false;
+        bridgeTimer = 0;
+        foreach (GameObject go in pieces)
+        {
+            Destroy(go);
+        }
+        water.Reset();
         yield break;
     }
 
@@ -349,7 +358,7 @@ public class PlayerController : MonoBehaviour
             tempSwordChange.y += 0.15f;
             capColl.transform.localPosition = tempSwordChange;
             StartCoroutine(sword.SwordStart());
-           swordActive = true;
+            swordActive = true;
         }
         if (element != 2 && this.element == 2 && !earthOnCD && sword.GetCastable())
         {
