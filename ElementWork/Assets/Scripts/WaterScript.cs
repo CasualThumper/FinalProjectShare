@@ -63,10 +63,17 @@ public class WaterScript : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        instantiatedAnchor1 = false;
+        instantiatedAnchor2 = false;
+        anchor1Locked = false;
+    }
+
     public void Deactivate()
     {
-        anchor1.SetActive (false);
-        anchor2.SetActive (false);
+        anchor1.SetActive(false);
+        anchor2.SetActive(false);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
