@@ -35,13 +35,14 @@ public class PlayerController : MonoBehaviour
     private bool raycastFinished = false;
     private bool bridgeActive = false;
     private bool piece1Moving = false;
+    private bool piece2Moving = false;
     private bool swordActive = false;
     public bool isWalking = false;
 
     private readonly float cooldown = 7f;
     private readonly float swordDuration = 15f;
     private readonly float bridgeDuration = 5f;
-    private readonly float moveTime = 0.4f;
+    private readonly float moveTime = 0.2f;
     private float earthCDTimer = 0f;
     private float swordTimer = 0f;
     private float bridgeTimer = 0f;
@@ -280,12 +281,19 @@ public class PlayerController : MonoBehaviour
         anchor1.transform.LookAt(anchor2.transform);
         for (int i = 0; i < numPieces; i++)
         {
+            Debug.Log("Piece " + i);
+            if ((piece1Moving && piece2Moving) && i>1) 
+            {
+                i--;
+                yield return new WaitForEndOfFrame();
+                continue;
+            }
             piecePos = Vector3.MoveTowards(piecePos, anchor2.transform.position, size);
             tempGO = Instantiate(prefab, piecePos - offset, anchor1.transform.rotation);
             pieces[i] = tempGO;
             tempGO.transform.localScale += sizeScale;
             StartCoroutine(MovePiece(tempGO, piecePos));
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.4f);
         }
         bridgeActive = true;
         while (bridgeTimer < bridgeDuration)
@@ -309,11 +317,12 @@ public class PlayerController : MonoBehaviour
             piece1 = go;
             piece1Moving = true;
             Vector3 start1 = piece1.transform.position;
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 10; i++)
             {
+                Debug.Log(i);
                 piece1.transform.position = Vector3.Lerp(start1, final, (piece1Time / moveTime));
-                piece1Time += 0.01f;
-                yield return new WaitForSeconds(0.01f);
+                piece1Time += 0.02f;
+                yield return new WaitForSeconds(0.02f);
             }
             piece1Time = 0f;
             piece1Moving = false;
@@ -321,14 +330,17 @@ public class PlayerController : MonoBehaviour
         else
         {
             piece2 = go;
+            piece2Moving = true;
             Vector3 start2 = piece2.transform.position;
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 10; i++)
             {
+                Debug.Log(i);
                 piece2.transform.position = Vector3.Lerp(start2, final, (piece2Time / moveTime));
-                piece2Time += 0.01f;
-                yield return new WaitForSeconds(0.01f);
+                piece2Time += 0.02f;
+                yield return new WaitForSeconds(0.02f);
             }
             piece2Time = 0f;
+            piece2Moving = false;
         }
         yield break;
     }
